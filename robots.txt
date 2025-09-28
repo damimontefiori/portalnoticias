@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://portal-noticias-argentina.netlify.app/sitemap.xml
+
+# Crawl delay for bots
+Crawl-delay: 1
+
+# Disallow service worker and manifest
+Disallow: /sw.js
+Disallow: /manifest.json
+
+# Allow all main content
+Allow: /styles/
+Allow: /js/
+Allow: /icons/
+Allow: /screenshots/
+
+# Block common bot paths we don't need
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /wp-content/
+Disallow: /*.json$
+Disallow: /*?utm_*
+Disallow: /*?fbclid*
+Disallow: /*?ref=*

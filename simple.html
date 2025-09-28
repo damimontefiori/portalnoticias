@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Noticias Argentina - Simple</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #212529;
+        }
+        .header {
+            background: linear-gradient(135deg, #0066cc 0%, #0052a3 100%);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        .ticker {
+            background: white;
+            padding: 1rem;
+            margin: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .rates {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .rate {
+            text-align: center;
+            padding: 0.5rem;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        .rate-name {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 0.25rem;
+        }
+        .rate-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #0066cc;
+        }
+        .news-section {
+            margin: 1rem;
+        }
+        .news-card {
+            background: white;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .category {
+            display: inline-block;
+            background: #0066cc;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+        .title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #212529;
+        }
+        .summary {
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📰 Portal Argentina</h1>
+        <p>Noticias y cotizaciones actualizadas</p>
+    </header>
+
+    <section class="ticker">
+        <h2>💱 Cotizaciones del Dólar</h2>
+        <div class="rates" id="dollar-rates">
+            <div class="rate">
+                <div class="rate-name">Oficial</div>
+                <div class="rate-value" id="oficial">Cargando...</div>
+            </div>
+            <div class="rate">
+                <div class="rate-name">Blue</div>
+                <div class="rate-value" id="blue">Cargando...</div>
+            </div>
+            <div class="rate">
+                <div class="rate-name">MEP</div>
+                <div class="rate-value" id="mep">Cargando...</div>
+            </div>
+            <div class="rate">
+                <div class="rate-name">CCL</div>
+                <div class="rate-value" id="ccl">Cargando...</div>
+            </div>
+        </div>
+        <p style="text-align: center; margin-top: 0.5rem; font-size: 0.8rem; color: #666;" id="last-update">
+            Actualizando...
+        </p>
+    </section>
+
+    <section class="news-section">
+        <h2>📰 Últimas Noticias</h2>
+        <div id="news-container" class="loading">
+            Cargando noticias...
+        </div>
+    </section>
+
+    <script src="js/data.js"></script>
+    <script src="js/dollar.js"></script>
+    <script>
+        // Función para cargar cotizaciones
+        async function loadDollarRates() {
+            try {
+                const rates = await window.dollarService.getDollarRates();
+                
+                document.getElementById('oficial').textContent = `$${rates.oficial.venta}`;
+                document.getElementById('blue').textContent = `$${rates.blue.venta}`;
+                document.getElementById('mep').textContent = `$${rates.mep.venta}`;
+                document.getElementById('ccl').textContent = `$${rates.ccl.venta}`;
+                
+                const updateTime = new Date(rates.lastUpdate).toLocaleTimeString('es-AR');
+                document.getElementById('last-update').textContent = `Actualizado: ${updateTime} (${rates.source})`;
+                
+                console.log('Cotizaciones cargadas exitosamente:', rates);
+            } catch (error) {
+                console.error('Error cargando cotizaciones:', error);
+                document.getElementById('last-update').textContent = 'Error cargando cotizaciones';
+            }
+        }
+        
+        // Función para cargar noticias
+        function loadNews() {
+            try {
+                const allNews = window.newsData.getAllNews();
+                const container = document.getElementById('news-container');
+                
+                if (allNews && allNews.length > 0) {
+                    container.innerHTML = allNews.map(article => `
+                        <div class="news-card">
+                            <span class="category">${article.categoryInfo.name}</span>
+                            <h3 class="title">${article.title}</h3>
+                            <p class="summary">${article.summary}</p>
+                            <small style="color: #666;">${article.date} • ${article.readTime}</small>
+                        </div>
+                    `).join('');
+                    
+                    console.log('Noticias cargadas exitosamente:', allNews.length);
+                } else {
+                    container.innerHTML = '<p>No se encontraron noticias.</p>';
+                }
+            } catch (error) {
+                console.error('Error cargando noticias:', error);
+                document.getElementById('news-container').innerHTML = 
+                    '<p style="color: red;">Error cargando noticias: ' + error.message + '</p>';
+            }
+        }
+        
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM cargado, inicializando...');
+            
+            // Verificar dependencias
+            if (typeof window.newsData === 'undefined') {
+                console.error('newsData no está disponible');
+                document.getElementById('news-container').innerHTML = 
+                    '<p style="color: red;">Error: newsData no cargado</p>';
+            } else {
+                loadNews();
+            }
+            
+            if (typeof window.dollarService === 'undefined') {
+                console.error('dollarService no está disponible');
+                document.getElementById('last-update').textContent = 'Error: dollarService no cargado';
+            } else {
+                loadDollarRates();
+            }
+        });
+        
+        // Actualizar cotizaciones cada 5 minutos
+        setInterval(loadDollarRates, 5 * 60 * 1000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .ok { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>Portal Argentina - Debug</h1>
+    <div id="debug-output"></div>
+    
+    <script src="js/data.js"></script>
+    <script src="js/dollar.js"></script>
+    <script>
+        const debugOutput = document.getElementById('debug-output');
+        
+        function addDebugLine(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = message;
+            debugOutput.appendChild(div);
+        }
+        
+        // Test 1: newsData
+        addDebugLine('<h3>Test 1: newsData</h3>');
+        if (typeof window.newsData === 'undefined') {
+            addDebugLine('❌ window.newsData no está definido', 'error');
+        } else {
+            addDebugLine('✅ window.newsData está definido', 'ok');
+            try {
+                const allNews = window.newsData.getAllNews();
+                addDebugLine(`✅ Noticias cargadas: ${allNews.length}`, 'ok');
+                
+                if (allNews.length > 0) {
+                    addDebugLine(`<pre>${JSON.stringify(allNews[0], null, 2)}</pre>`);
+                }
+                
+                // Test categorías
+                const categories = ['economia', 'politica', 'deportes', 'entretenimiento', 'tecnologia'];
+                categories.forEach(cat => {
+                    const catNews = window.newsData.getNewsByCategory(cat);
+                    addDebugLine(`📂 ${cat}: ${catNews.length} noticias`, 'info');
+                });
+                
+            } catch (error) {
+                addDebugLine(`❌ Error obteniendo noticias: ${error.message}`, 'error');
+            }
+        }
+        
+        // Test 2: dollarService
+        addDebugLine('<h3>Test 2: dollarService</h3>');
+        if (typeof window.dollarService === 'undefined') {
+            addDebugLine('❌ window.dollarService no está definido', 'error');
+        } else {
+            addDebugLine('✅ window.dollarService está definido', 'ok');
+            
+            // Test fallback data
+            try {
+                const fallbackData = window.dollarService.getFallbackData();
+                addDebugLine('✅ Datos de fallback obtenidos:', 'ok');
+                addDebugLine(`<pre>${JSON.stringify(fallbackData, null, 2)}</pre>`);
+            } catch (error) {
+                addDebugLine(`❌ Error obteniendo fallback: ${error.message}`, 'error');
+            }
+            
+            // Test API call
+            window.dollarService.getDollarRates()
+                .then(rates => {
+                    addDebugLine('✅ API de dólar funcionando:', 'ok');
+                    addDebugLine(`<pre>${JSON.stringify(rates, null, 2)}</pre>`);
+                })
+                .catch(error => {
+                    addDebugLine(`❌ Error API dólar: ${error.message}`, 'error');
+                });
+        }
+        
+        // Test 3: DOM Elements
+        addDebugLine('<h3>Test 3: DOM Elements (simulado)</h3>');
+        const requiredElements = ['dollar-rates', 'news-grid', 'last-update'];
+        requiredElements.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                addDebugLine(`✅ Elemento #${id} encontrado`, 'ok');
+            } else {
+                addDebugLine(`❌ Elemento #${id} NO encontrado`, 'error');
+            }
+        });
+        
+        // Test 4: Fetch APIs
+        addDebugLine('<h3>Test 4: APIs Externas</h3>');
+        
+        // Test Bluelytics
+        fetch('https://api.bluelytics.com.ar/v2/latest')
+            .then(response => response.json())
+            .then(data => {
+                addDebugLine('✅ Bluelytics API respondiendo:', 'ok');
+                addDebugLine(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+            })
+            .catch(error => {
+                addDebugLine(`❌ Bluelytics API falló: ${error.message}`, 'error');
+                
+                // Probar DolarApi como backup
+                return fetch('https://dolarapi.com/v1/dolares');
+            })
+            .then(response => {
+                if (response) {
+                    return response.json();
+                }
+            })
+            .then(data => {
+                if (data) {
+                    addDebugLine('✅ DolarApi backup funcionando:', 'ok');
+                    addDebugLine(`<pre>${JSON.stringify(data, null, 2)}</pre>`);
+                }
+            })
+            .catch(error => {
+                addDebugLine(`❌ Todas las APIs de dólar fallaron: ${error.message}`, 'error');
+            });
+            
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Portal</title>
+</head>
+<body>
+    <div id="test">Cargando test...</div>
+    
+    <script src="js/data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const testDiv = document.getElementById('test');
+            
+            try {
+                // Test newsData
+                if (typeof window.newsData !== 'undefined') {
+                    const allNews = window.newsData.getAllNews();
+                    testDiv.innerHTML = `
+                        <h2>Test Exitoso!</h2>
+                        <p>Noticias cargadas: ${allNews.length}</p>
+                        <h3>Primera noticia:</h3>
+                        <p><strong>${allNews[0]?.title}</strong></p>
+                        <p>${allNews[0]?.summary}</p>
+                    `;
+                } else {
+                    testDiv.innerHTML = '<p style="color: red;">Error: newsData no está disponible</p>';
+                }
+            } catch (error) {
+                testDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                console.error('Error:', error);
+            }
+        });
+    </script>
+</body>
+</html>
