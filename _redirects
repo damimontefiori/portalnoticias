@@ -1,0 +1,9 @@
+# Netlify redirects file
+# https://docs.netlify.com/routing/redirects/
+
+# API redirects for CORS bypass
+/api/dollar/* https://api.bluelytics.com.ar/v2/:splat 200
+/api/dollar-backup/* https://dolarapi.com/v1/:splat 200
+
+# SPA fallback - serve index.html for all routes that don't match files
+/*    /index.html   200

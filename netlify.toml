@@ -105,13 +105,6 @@
   from = "/*"
   to = "/index.html"
   status = 200
-  conditions = {Role = ["admin"]}
-
-# Error pages
-[[redirects]]
-  from = "/404"
-  to = "/index.html"
-  status = 404
 
 # Plugin configuration
 [[plugins]]
