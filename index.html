@@ -3,238 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Noticias Argentina</title>
-    <meta name="description" content="Portal de noticias argentinas con actualidad económica, política, deportes, entretenimiento e inteligencia artificial global">
-    <meta name="theme-color" content="#0066cc">
-    
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="manifest.json">
-    
-    <!-- Favicon inline para evitar errores 404 -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230066cc'/><text x='16' y='20' text-anchor='middle' font-family='Arial' font-size='18' font-weight='bold' fill='white'>PA</text></svg>">
-    
-    <!-- Preconnect to external services -->
-    <link rel="preconnect" href="https://api.bluelytics.com.ar">
-    
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles/main.css">
-    
-    <!-- Google Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome for icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Portal Noticias Argentina - Netlify Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        .success {
+            color: #4CAF50;
+            font-size: 1.2em;
+            margin: 20px 0;
+        }
+        .btn {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <!-- Navigation Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <div class="logo">
-                    <i class="fas fa-newspaper"></i>
-                    <h1>Portal Argentina</h1>
-                </div>
-                <div class="header-actions">
-                    <button id="refresh-btn" class="refresh-btn" aria-label="Actualizar noticias">
-                        <i class="fas fa-sync-alt"></i>
-                    </button>
-                    <button id="menu-btn" class="menu-btn" aria-label="Menú">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
-            </div>
-            <div class="developer-credit" style="color: #000;">
-                <span>Desarrollado por </span>
-                <a href="https://www.linkedin.com/in/damian-montefiori" target="_blank" rel="noopener noreferrer" class="developer-link" style="color: #000;">
-                    <i class="fab fa-linkedin"></i>
-                    Damian Montefiori
-                </a>
-            </div>
-        </div>
-    </header>
-
-    <!-- Dollar Exchange Widget (Always visible) -->
-    <section class="dollar-ticker">
-        <div class="container">
-            <div class="ticker-content">
-                <div class="ticker-title">
-                    <i class="fas fa-dollar-sign"></i>
-                    Cotizaciones
-                </div>
-                <div id="dollar-rates" class="dollar-rates">
-                    <div class="rate-item loading">
-                        <span class="rate-name">Oficial</span>
-                        <span class="rate-value">--</span>
-                    </div>
-                    <div class="rate-item loading">
-                        <span class="rate-name">Blue</span>
-                        <span class="rate-value">--</span>
-                    </div>
-                    <div class="rate-item loading">
-                        <span class="rate-name">MEP</span>
-                        <span class="rate-value">--</span>
-                    </div>
-                    <div class="rate-item loading">
-                        <span class="rate-name">CCL</span>
-                        <span class="rate-value">--</span>
-                    </div>
-                </div>
-                <div class="ticker-time">
-                    <small id="last-update">Actualizando...</small>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Category Navigation -->
-            <nav class="category-nav">
-                <div class="category-tabs">
-                    <button class="tab-btn active" data-category="all">
-                        <i class="fas fa-home"></i>
-                        Todas
-                    </button>
-                    <button class="tab-btn" data-category="economia">
-                        <i class="fas fa-chart-line"></i>
-                        Economía
-                    </button>
-                    <button class="tab-btn" data-category="politica">
-                        <i class="fas fa-landmark"></i>
-                        Política
-                    </button>
-                    <button class="tab-btn" data-category="deportes">
-                        <i class="fas fa-futbol"></i>
-                        Deportes
-                    </button>
-                    <button class="tab-btn" data-category="entretenimiento">
-                        <i class="fas fa-film"></i>
-                        Shows
-                    </button>
-                    <button class="tab-btn" data-category="tecnologia">
-                        <i class="fas fa-microchip"></i>
-                        Tech & IA
-                    </button>
-                </div>
-            </nav>
-
-            <!-- News Grid -->
-            <section class="news-grid" id="news-grid">
-                <!-- Loading skeleton -->
-                <div class="loading-skeleton">
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                    <div class="skeleton-card"></div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- News Detail Modal -->
-    <div id="news-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button class="modal-close" id="modal-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <!-- Content will be injected here -->
-            </div>
+    <div class="container">
+        <h1>🇦🇷 Portal Noticias Argentina</h1>
+        <div class="success">✅ ¡Netlify está funcionando correctamente!</div>
+        
+        <h2>🚀 Deploy Exitoso</h2>
+        <p><strong>Fecha:</strong> <span id="fecha"></span></p>
+        <p><strong>URL:</strong> <span id="url"></span></p>
+        
+        <h3>🔗 Navegación</h3>
+        <a href="index-backup.html" class="btn">Ver Sitio Completo</a>
+        <a href="test-netlify.html" class="btn">Página de Test</a>
+        
+        <div style="margin-top: 30px; font-size: 0.9em; opacity: 0.8;">
+            <p>Desarrollado por <strong>Damian Montefiori</strong></p>
+            <p>🔧 Esta es una versión simplificada para confirmar que Netlify funciona</p>
         </div>
     </div>
 
-    <!-- PWA Install Banner -->
-    <div id="pwa-banner" class="pwa-banner hidden">
-        <div class="pwa-content">
-            <div class="pwa-info">
-                <i class="fas fa-mobile-alt"></i>
-                <span>Instalar Portal Argentina</span>
-            </div>
-            <div class="pwa-actions">
-                <button id="pwa-install" class="pwa-install-btn">Instalar</button>
-                <button id="pwa-dismiss" class="pwa-dismiss-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts - Orden importante para la carga -->
-    <script src="js/data.js"></script>
-    <script src="js/dollar.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/pwa.js"></script>
-    
-    <!-- Script de inicialización mejorado -->
     <script>
-        // Inicialización segura con múltiples intentos
-        let initAttempts = 0;
-        const maxAttempts = 5;
+        document.getElementById('fecha').textContent = new Date().toLocaleString('es-AR');
+        document.getElementById('url').textContent = window.location.href;
         
-        function tryInitialize() {
-            initAttempts++;
-            console.log(`Intento de inicialización ${initAttempts}/${maxAttempts}`);
+        console.log('🚀 Netlify Test Page cargada correctamente');
+        console.log('Fecha:', new Date().toISOString());
+        console.log('URL:', window.location.href);
+        
+        // Verificar que los archivos están disponibles
+        fetch('./manifest.json')
+            .then(() => console.log('✅ manifest.json disponible'))
+            .catch(() => console.log('❌ manifest.json no encontrado'));
             
-            // Verificar dependencias
-            const hasNewsData = typeof window.newsData !== 'undefined';
-            const hasDollarService = typeof window.dollarService !== 'undefined';
-            const hasNewsApp = typeof NewsApp !== 'undefined';
-            
-            console.log('Dependencias:', { hasNewsData, hasDollarService, hasNewsApp });
-            
-            if (hasNewsData && hasDollarService && hasNewsApp) {
-                console.log('✅ Todas las dependencias cargadas, inicializando app...');
-                try {
-                    if (typeof window.newsApp === 'undefined') {
-                        window.newsApp = new NewsApp();
-                        window.newsApp.init().then(() => {
-                            console.log('✅ Portal Argentina inicializado correctamente');
-                        }).catch(error => {
-                            console.error('❌ Error inicializando app:', error);
-                        });
-                    }
-                } catch (error) {
-                    console.error('❌ Error creando NewsApp:', error);
-                }
-            } else {
-                if (initAttempts < maxAttempts) {
-                    console.log(`⏳ Reintentando en 500ms... (falta: ${!hasNewsData ? 'newsData ' : ''}${!hasDollarService ? 'dollarService ' : ''}${!hasNewsApp ? 'NewsApp' : ''})`);
-                    setTimeout(tryInitialize, 500);
-                } else {
-                    console.error('❌ Falló la inicialización después de', maxAttempts, 'intentos');
-                    // Fallback: mostrar datos estáticos
-                    showFallbackContent();
-                }
-            }
-        }
-        
-        function showFallbackContent() {
-            const newsGrid = document.getElementById('news-grid');
-            if (newsGrid) {
-                newsGrid.innerHTML = `
-                    <div style="text-align: center; padding: 2rem; color: #666;">
-                        <h3>🔧 Modo de Emergencia</h3>
-                        <p>La aplicación no pudo cargar completamente.</p>
-                        <p>Prueba refrescando la página o ve a <a href="simple.html">versión simple</a></p>
-                    </div>
-                `;
-            }
-        }
-        
-        // Iniciar cuando el DOM esté listo
-        document.addEventListener('DOMContentLoaded', tryInitialize);
-        
-        // También intentar cuando la ventana termine de cargar
-        window.addEventListener('load', () => {
-            if (typeof window.newsApp === 'undefined') {
-                setTimeout(tryInitialize, 100);
-            }
-        });
+        fetch('./styles/main.css')
+            .then(() => console.log('✅ main.css disponible'))
+            .catch(() => console.log('❌ main.css no encontrado'));
     </script>
 </body>
 </html>
