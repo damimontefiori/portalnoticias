@@ -1,17 +1,7 @@
 # Netlify build configuration
 [build]
-  # Build command (no build process needed for static site)
-  command = "echo 'Static site - no build required'"
-  
-  # Directory to publish
+  # Directory to publish (current directory)
   publish = "."
-  
-  # Functions directory (not used in this project)
-  # functions = "netlify/functions"
-
-[build.environment]
-  # Node version (for any future build processes)
-  NODE_VERSION = "18"
 
 # Headers for better caching and security
 [[headers]]
@@ -106,25 +96,6 @@
   to = "/index.html"
   status = 200
 
-# Plugin configuration
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-  
-  [plugins.inputs.thresholds]
-    performance = 0.8
-    accessibility = 0.9
-    best-practices = 0.8
-    seo = 0.9
-    pwa = 0.8
-
-[[plugins]]
-  package = "netlify-plugin-submit-sitemap"
-  
-  [plugins.inputs]
-    baseUrl = "https://portal-noticias-argentina.netlify.app"
-    sitemapPath = "/sitemap.xml"
-    ignorePeriod = 0
-    providers = [
-      "google",
-      "bing"
-    ]
+# Plugin configuration (disabled temporarily for debugging)
+# [[plugins]]
+#   package = "@netlify/plugin-lighthouse"
